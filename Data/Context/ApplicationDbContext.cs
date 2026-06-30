@@ -15,6 +15,11 @@ namespace Data.Context
 
             public DbSet<Producto> Productos { get; set; }
 
+            public DbSet<Cupon> Cupones { get; set; }
+            public DbSet<ZonaEnvio> ZonasEnvio { get; set; }
+
+
+
 
     }
 }

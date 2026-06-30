@@ -14,6 +14,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
+builder.Services.AddScoped<ICuponRepositorio, CuponRepositorio>();
+builder.Services.AddScoped<IZonaEnvioRepositorio, ZonaEnvioRepositorio>();
 
 // 1. Inyectar EF Core In-Memory usando tu contexto real
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -54,6 +56,27 @@ using (var scope = app.Services.CreateScope())
             new Producto { Id = 6, Nombre = "Zapatillas Running", Descripcion = "Para alto rendimiento", Precio = 2800m, Categoria = "Deportes", Stock = 30 },
             new Producto { Id = 7, Nombre = "Pelota de Fútbol", Descripcion = "Balón oficial FIFA", Precio = 1500m, Categoria = "Deportes", Stock = 20 },
             new Producto { Id = 8, Nombre = "Audífonos BT", Descripcion = "Cancelación activa de ruido", Precio = 5500m, Categoria = "Electrónica", Stock = 15 }
+        );
+        context.SaveChanges();
+    }
+
+    if (!context.Cupones.Any())
+    {
+        context.Cupones.AddRange(
+            new Cupon { Id = 1, Codigo = "BIENVENIDO10", MontoDescuento = 500m, LimiteUsos = 100, UsosActuales = 0 },
+            new Cupon { Id = 2, Codigo = "VERANO2026", MontoDescuento = 1000m, LimiteUsos = 50, UsosActuales = 0 },
+            new Cupon { Id = 3, Codigo = "AGOTADO", MontoDescuento = 300m, LimiteUsos = 1, UsosActuales = 1 } // útil para testear el caso de límite alcanzado
+        );
+        context.SaveChanges();
+    }
+
+    if (!context.ZonasEnvio.Any())
+    {
+        context.ZonasEnvio.AddRange(
+            new ZonaEnvio { Id = 1, Nombre = "Santo Domingo", Costo = 150m },
+            new ZonaEnvio { Id = 2, Nombre = "Santiago", Costo = 250m },
+            new ZonaEnvio { Id = 3, Nombre = "Punta Cana", Costo = 400m },
+            new ZonaEnvio { Id = 4, Nombre = "Interior", Costo = 350m }
         );
         context.SaveChanges();
     }

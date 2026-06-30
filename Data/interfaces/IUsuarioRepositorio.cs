@@ -7,6 +7,6 @@ namespace Data.interfaces
         /// <summary>
         /// Retorna el usuario si las credenciales son válidas, null si no.
         /// </summary>
-        Task<Usuario?> ObtenerPorCredencialesAsync(string correo, string passwordHash);
+        Task<Usuario?> ObtenerPorCredencialesAsync(string correo, string password);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Data.Context;
 using Data.Entities;
 using Data.interfaces;
-using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositorios
@@ -15,10 +14,11 @@ namespace Data.Repositorios
             _context = context;
         }
 
-        public async Task<Usuario?> ObtenerPorCredencialesAsync(string correo, string passwordHash)
+        public async Task<Usuario?> ObtenerPorCredencialesAsync(string correo, string password)
         {
+            // Se busca usando texto plano, simple y directo
             return await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Correo == correo && u.PasswordHash == passwordHash);
+                .FirstOrDefaultAsync(u => u.Correo == correo && u.Password == password);
         }
     }
 }

@@ -9,10 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
 
 // 1. Inyectar EF Core In-Memory usando tu contexto real
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -40,19 +41,43 @@ using (var scope = app.Services.CreateScope())
         });
         context.SaveChanges();
     }
+    //Poblar la base de datos con productos de ejemplo
+
+    if (!context.Productos.Any())
+    {
+        context.Productos.AddRange(
+            new Producto { Id = 1, Nombre = "Laptop Pro 15", Descripcion = "Alto rendimiento para profesionales", Precio = 45000m, Categoria = "Electrónica", Stock = 10 },
+            new Producto { Id = 2, Nombre = "Mouse Inalámbrico", Descripcion = "Ergonómico, receptor 2.4GHz", Precio = 850m, Categoria = "Electrónica", Stock = 50 },
+            new Producto { Id = 3, Nombre = "Teclado Mecánico", Descripcion = "RGB, switches Cherry MX", Precio = 3200m, Categoria = "Electrónica", Stock = 25 },
+            new Producto { Id = 4, Nombre = "Camiseta Básica", Descripcion = "Algodón 100% premium", Precio = 450m, Categoria = "Ropa", Stock = 100 },
+            new Producto { Id = 5, Nombre = "Jeans Slim Fit", Descripcion = "Denim de alta calidad", Precio = 1200m, Categoria = "Ropa", Stock = 60 },
+            new Producto { Id = 6, Nombre = "Zapatillas Running", Descripcion = "Para alto rendimiento", Precio = 2800m, Categoria = "Deportes", Stock = 30 },
+            new Producto { Id = 7, Nombre = "Pelota de Fútbol", Descripcion = "Balón oficial FIFA", Precio = 1500m, Categoria = "Deportes", Stock = 20 },
+            new Producto { Id = 8, Nombre = "Audífonos BT", Descripcion = "Cancelación activa de ruido", Precio = 5500m, Categoria = "Electrónica", Stock = 15 }
+        );
+        context.SaveChanges();
+    }
 }
 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();      // ← para CSS/JS de wwwroot
+app.UseRouting();          // ← activa el sistema de rutas MVC
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllerRoute(    // ← esto reemplaza MapControllers()
+    name: "default",
+    pattern: "{controller=Producto}/{action=Index}/{id?}");
 
 app.Run();

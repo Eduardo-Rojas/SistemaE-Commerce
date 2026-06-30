@@ -12,6 +12,9 @@ namespace Data.Context
 
             // tabla de usuarios
             public DbSet<Usuario> Usuarios { get; set; }
-        
+
+            public DbSet<Producto> Productos { get; set; }
+
+
     }
 }

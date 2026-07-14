@@ -26,7 +26,7 @@ jobs:
       - name: Configurar .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # Cambia a 10.0.x si realmente usas esa versión
+          dotnet-version: '10.0.x' 
 
       - name: Restaurar dependencias
         run: dotnet restore
@@ -35,7 +35,7 @@ jobs:
         run: dotnet build --configuration ${{ env.buildConfiguration }} --no-restore
 
       - name: Ejecutar pruebas unitarias
-        run: dotnet test '**/*Test*.csproj' --configuration ${{ env.buildConfiguration }} --no-build --logger trx --results-directory ./TestResults --collect:"XPlat Code Coverage"
+        run: dotnet test --configuration ${{ env.buildConfiguration }} --no-build --logger trx --results-directory ./TestResults --collect:"XPlat Code Coverage"
 
       - name: Publicar resultados
         uses: dorny/test-reporter@v1

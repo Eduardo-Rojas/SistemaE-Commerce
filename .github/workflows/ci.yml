@@ -1,0 +1,47 @@
+name: CI - Build & Test
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - qa
+      - master
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    name: Build y Test .NET
+    runs-on: ubuntu-latest
+    env:
+      buildConfiguration: 'Release'
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # Cambia a 10.0.x si realmente usas esa versión
+
+      - name: Restaurar dependencias
+        run: dotnet restore
+
+      - name: Compilar el proyecto
+        run: dotnet build --configuration ${{ env.buildConfiguration }} --no-restore
+
+      - name: Ejecutar pruebas unitarias
+        run: dotnet test '**/*Test*.csproj' --configuration ${{ env.buildConfiguration }} --no-build --logger trx --results-directory ./TestResults --collect:"XPlat Code Coverage"
+
+      - name: Publicar resultados
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Resultados de Pruebas Unitarias
+          path: '**/TestResults/*.trx'
+          reporter: dotnet-trx
+          fail-on-error: true

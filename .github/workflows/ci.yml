@@ -13,7 +13,7 @@ name: CI - Build & Test
 on:
   pull_request:
     branches:
-      - Develop
+      - develop
       - qa
       - master
   # Opcional: también correrlo en cada push directo a esas ramas

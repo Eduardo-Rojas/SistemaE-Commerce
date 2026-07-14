@@ -1,0 +1,80 @@
+﻿@model Web.Models.FiltroProductoViewModel
+@{
+    ViewData["Title"] = "Catálogo de Productos";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Catálogo de Productos</h2>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="get" asp-action="Index" asp-controller="Producto">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Nombre</label>
+                        <input type="text" name="nombre" class="form-control"
+                               placeholder="Buscar producto..." value="@Model.Nombre" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Categoría</label>
+                        <select name="categoria" class="form-select">
+                            <option value="">Todas las categorías</option>
+                            @foreach (var cat in Model.Categorias)
+                            {
+                                <option value="@cat" selected="@(Model.Categoria == cat)">
+                                    @cat
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold">Precio mín.</label>
+                        <input type="number" name="precioMin" class="form-control"
+                               placeholder="0.00" value="@Model.PrecioMin" step="0.01" min="0" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold">Precio máx.</label>
+                        <input type="number" name="precioMax" class="form-control"
+                               placeholder="0.00" value="@Model.PrecioMax" step="0.01" min="0" />
+                    </div>
+                    <div class="col-md-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">Filtrar</button>
+                        <a href="/Producto" class="btn btn-outline-secondary">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (!Model.Productos.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            No se encontraron productos con los filtros seleccionados.
+        </div>
+    }
+    else
+    {
+        <p class="text-muted small">Mostrando @Model.Productos.Count() producto(s)</p>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var producto in Model.Productos)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <span class="badge bg-secondary mb-2">@producto.Categoria</span>
+                            <h5 class="card-title">@producto.Nombre</h5>
+                            <p class="card-text text-muted small">@producto.Descripcion</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <span class="fs-5 fw-bold text-success">
+                                $@producto.Precio.ToString("N2")
+                            </span>
+                            <small class="text-muted">Stock: @producto.Stock</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

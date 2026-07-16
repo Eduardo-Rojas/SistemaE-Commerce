@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<!-- Cambio de prueba realizado por Jean en la rama features/Jean -->
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -11,3 +12,4 @@
   </ItemGroup>
 
 </Project>
+

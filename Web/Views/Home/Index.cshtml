@@ -9,6 +9,8 @@
         Los resultados esperados se calculan sobre los datos de ejemplo que se cargan al arrancar la aplicación.
     </p>
 
+    <h4 class="mt-4">Módulo de tienda</h4>
+
     <div class="row row-cols-1 row-cols-md-2 g-4 mt-1">
 
         <div class="col">
@@ -101,6 +103,132 @@
                 </div>
                 <div class="card-footer">
                     <a asp-controller="Account" asp-action="Login" class="btn btn-primary w-100">Ir a Login</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h4 class="mt-5">Módulo de catálogo y administración</h4>
+    <p class="text-muted small">
+        Cuatro de estas funcionalidades son APIs REST; las pantallas las consumen con <code>fetch</code>.
+        El endpoint que usa cada una está indicado en la propia pantalla.
+    </p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-1">
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Catálogo por categoría</h5>
+                    <p class="card-text text-muted small">Cuadrícula de productos y filtrado por categoría.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Sin filtro</td><td class="text-end">8 productos con imagen</td></tr>
+                            <tr><td>Electrónica</td><td class="text-end">4 productos</td></tr>
+                            <tr><td>Ropa</td><td class="text-end">2 productos</td></tr>
+                            <tr><td>Deportes</td><td class="text-end">2 productos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Catalogo" asp-action="Index" class="btn btn-primary w-100">Ir a Catálogo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Búsqueda con autocompletado</h5>
+                    <p class="card-text text-muted small">No dispara antes del tercer carácter; máximo 5 resultados.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Escribir <code>ca</code></td><td class="text-end">No se envía petición</td></tr>
+                            <tr><td>Escribir <code>cam</code></td><td class="text-end">1 resultado: Camiseta Básica</td></tr>
+                            <tr><td>Escribir <code>lap</code></td><td class="text-end">1 resultado: Laptop Pro 15</td></tr>
+                            <tr><td>Escribir <code>xyz</code></td><td class="text-end">"No se encontraron productos"</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Tienda" asp-action="Buscar" class="btn btn-primary w-100">Ir a Búsqueda</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Dirección de entrega</h5>
+                    <p class="card-text text-muted small">Guarda direcciones y las asocia al usuario 1.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Al entrar</td><td class="text-end">2 direcciones ya guardadas</td></tr>
+                            <tr><td>Guardar una nueva</td><td class="text-end">Aparece en el listado</td></tr>
+                            <tr><td>Calle vacía</td><td class="text-end">"La calle es obligatoria"</td></tr>
+                            <tr><td>Sin referencias</td><td class="text-end">Guarda igual (es opcional)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Tienda" asp-action="Direccion" class="btn btn-primary w-100">Ir a Dirección</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Administración de pedidos</h5>
+                    <p class="card-text text-muted small">Filtro por estado y cambio manual de estado.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Sin filtro</td><td class="text-end">6 pedidos</td></tr>
+                            <tr><td>Filtrar Pagado</td><td class="text-end">3 pedidos</td></tr>
+                            <tr><td>Filtrar Enviado</td><td class="text-end">1 pedido, guía GUIA-001</td></tr>
+                            <tr><td>Cambiar a Enviado</td><td class="text-end">Se habilita el campo de guía</td></tr>
+                            <tr><td>Cambiar a otro estado</td><td class="text-end">La guía se ignora y se limpia</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Tienda" asp-action="Pedidos" class="btn btn-primary w-100">Ir a Pedidos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Promociones y reportes</h5>
+                    <p class="card-text text-muted small">Banner para el carrusel y exportación de ventas.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Subir una imagen</td><td class="text-end">Devuelve el nombre del archivo</td></tr>
+                            <tr><td>Subir sin archivo</td><td class="text-end">HTTP 400 con mensaje</td></tr>
+                            <tr><td>Descargar el CSV</td><td class="text-end">reporte-ventas.csv</td></tr>
+                            <tr><td>Contenido del CSV</td><td class="text-end">3 filas (solo los Pagado)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Tienda" asp-action="Promociones" class="btn btn-primary w-100">Ir a Promociones</a>
                 </div>
             </div>
         </div>

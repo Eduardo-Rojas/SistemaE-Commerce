@@ -12,9 +12,28 @@
             <a class="navbar-brand" asp-controller="Home" asp-action="Index">Sistema E-Commerce</a>
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" asp-controller="Producto" asp-action="Index">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" asp-controller="Cupon" asp-action="Index">Cupones</a></li>
-                <li class="nav-item"><a class="nav-link" asp-controller="Envio" asp-action="Index">Envío</a></li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Tienda</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-controller="Producto" asp-action="Index">Productos (filtros)</a></li>
+                        <li><a class="dropdown-item" asp-controller="Cupon" asp-action="Index">Cupones</a></li>
+                        <li><a class="dropdown-item" asp-controller="Envio" asp-action="Index">Envío</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Catálogo</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-controller="Catalogo" asp-action="Index">Catálogo</a></li>
+                        <li><a class="dropdown-item" asp-controller="Tienda" asp-action="Buscar">Búsqueda</a></li>
+                        <li><a class="dropdown-item" asp-controller="Tienda" asp-action="Direccion">Dirección de entrega</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" asp-controller="Tienda" asp-action="Pedidos">Admin · Pedidos</a></li>
+                        <li><a class="dropdown-item" asp-controller="Tienda" asp-action="Promociones">Admin · Promociones</a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Login</a></li>
             </ul>
         </div>
@@ -24,6 +43,7 @@
         @RenderBody()
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

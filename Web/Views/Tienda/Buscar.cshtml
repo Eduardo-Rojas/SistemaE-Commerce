@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Búsqueda con autocompletado";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <h2 class="mb-3">Búsqueda con autocompletado</h2>
+    <p class="text-muted small">
+        Consume <code>GET /api/Busqueda/Autocompletar</code>. No se envía petición hasta
+        el tercer carácter y la respuesta se limita a 5 resultados.
+    </p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <label for="termino" class="form-label fw-semibold">Buscar producto</label>
+            <input type="text" id="termino" class="form-control" placeholder="Ej: cam" autocomplete="off" />
+            <div id="estado" class="form-text">Esperando 3 caracteres (no se envía petición todavía).</div>
+
+            <ul id="resultados" class="list-group mt-3"></ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const input = document.getElementById('termino');
+    const lista = document.getElementById('resultados');
+    const estado = document.getElementById('estado');
+
+    input.addEventListener('input', async function () {
+        const termino = input.value;
+        lista.innerHTML = '';
+
+        if (termino.length < 3) {
+            estado.textContent = 'Esperando 3 caracteres (no se envía petición todavía).';
+            return;
+        }
+
+        const url = '/api/Busqueda/Autocompletar?termino=' + encodeURIComponent(termino);
+        estado.textContent = 'Consultando ' + url;
+
+        try {
+            const respuesta = await fetch(url);
+            const datos = await respuesta.json();
+
+            if (datos.mensaje) {
+                lista.innerHTML = '<li class="list-group-item text-muted">' + datos.mensaje + '</li>';
+                estado.textContent = 'Sin coincidencias.';
+                return;
+            }
+
+            datos.productos.forEach(function (p) {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.textContent = p.nombre;
+
+                const precio = document.createElement('span');
+                precio.className = 'fw-bold text-success';
+                precio.textContent = '$' + p.precio.toFixed(2);
+                li.appendChild(precio);
+
+                lista.appendChild(li);
+            });
+
+            estado.textContent = datos.productos.length + ' resultado(s) (máximo 5).';
+        } catch (e) {
+            estado.textContent = 'Error consultando la API: ' + e.message;
+        }
+    });
+</script>
+}

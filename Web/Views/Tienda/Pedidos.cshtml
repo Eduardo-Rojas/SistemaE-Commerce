@@ -1,0 +1,145 @@
+@{
+    ViewData["Title"] = "Administración de pedidos";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">Administración de pedidos</h2>
+    <p class="text-muted small">
+        Consume <code>GET /api/admin/AdminPedidos</code> y <code>PUT /api/admin/AdminPedidos/ActualizarEstado</code>.
+        El número de guía solo se envía cuando el estado nuevo es <strong>Enviado</strong>; en cualquier otro caso la API lo ignora.
+    </p>
+
+    <div class="mb-3 d-flex gap-2 align-items-center flex-wrap">
+        <label class="form-label fw-semibold mb-0">Filtrar por estado:</label>
+        <select id="filtro" class="form-select" style="width: auto;">
+            <option value="">Todos</option>
+            <option value="0">Pendiente</option>
+            <option value="1">Pagado</option>
+            <option value="2">Enviado</option>
+            <option value="3">Cancelado</option>
+        </select>
+        <span id="conteo" class="text-muted small"></span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th class="text-end">Total</th>
+                    <th>Guía</th>
+                    <th style="min-width: 320px;">Cambiar estado</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo"></tbody>
+        </table>
+    </div>
+
+    <div id="mensaje"></div>
+</div>
+
+@section Scripts {
+<script>
+    // El orden coincide con el enum EstadoPedido: Pendiente=0, Pagado=1, Enviado=2, Cancelado=3.
+    const ESTADOS = ['Pendiente', 'Pagado', 'Enviado', 'Cancelado'];
+    const COLORES = ['secondary', 'success', 'primary', 'danger'];
+    const ENVIADO = 2;
+
+    const cuerpo = document.getElementById('cuerpo');
+    const conteo = document.getElementById('conteo');
+    const mensaje = document.getElementById('mensaje');
+
+    async function cargar() {
+        const filtro = document.getElementById('filtro').value;
+        const url = filtro === '' ? '/api/admin/AdminPedidos' : '/api/admin/AdminPedidos?estado=' + filtro;
+
+        const respuesta = await fetch(url);
+        const pedidos = await respuesta.json();
+
+        cuerpo.innerHTML = '';
+        conteo.textContent = pedidos.length + ' pedido(s)';
+
+        pedidos.forEach(function (p) {
+            const fila = document.createElement('tr');
+
+            const fecha = new Date(p.fecha).toLocaleDateString();
+            fila.innerHTML =
+                '<td>' + p.id + '</td>' +
+                '<td>' + fecha + '</td>' +
+                '<td><span class="badge bg-' + COLORES[p.estado] + '">' + ESTADOS[p.estado] + '</span></td>' +
+                '<td class="text-end">$' + p.total.toFixed(2) + '</td>' +
+                '<td class="text-muted small">' + (p.numeroGuia || '—') + '</td>';
+
+            const celda = document.createElement('td');
+            const grupo = document.createElement('div');
+            grupo.className = 'd-flex gap-2';
+
+            const select = document.createElement('select');
+            select.className = 'form-select form-select-sm';
+            ESTADOS.forEach(function (nombre, indice) {
+                const opcion = document.createElement('option');
+                opcion.value = indice;
+                opcion.textContent = nombre;
+                if (indice === p.estado) { opcion.selected = true; }
+                select.appendChild(opcion);
+            });
+
+            const guia = document.createElement('input');
+            guia.type = 'text';
+            guia.className = 'form-control form-control-sm';
+            guia.placeholder = 'Nº de guía';
+            guia.disabled = p.estado !== ENVIADO;
+
+            select.addEventListener('change', function () {
+                guia.disabled = Number(select.value) !== ENVIADO;
+                if (guia.disabled) { guia.value = ''; }
+            });
+
+            const boton = document.createElement('button');
+            boton.type = 'button';
+            boton.className = 'btn btn-sm btn-primary';
+            boton.textContent = 'Aplicar';
+            boton.addEventListener('click', function () {
+                actualizar(p.id, Number(select.value), guia.value);
+            });
+
+            grupo.appendChild(select);
+            grupo.appendChild(guia);
+            grupo.appendChild(boton);
+            celda.appendChild(grupo);
+            fila.appendChild(celda);
+            cuerpo.appendChild(fila);
+        });
+    }
+
+    async function actualizar(pedidoId, nuevoEstado, numeroGuia) {
+        const respuesta = await fetch('/api/admin/AdminPedidos/ActualizarEstado', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pedidoId: pedidoId,
+                nuevoEstado: nuevoEstado,
+                numeroGuia: numeroGuia || null
+            })
+        });
+
+        if (respuesta.status === 204) {
+            mensaje.innerHTML = '<div class="alert alert-success">Pedido ' + pedidoId + ' actualizado a ' + ESTADOS[nuevoEstado] + '.</div>';
+            cargar();
+            return;
+        }
+
+        if (respuesta.status === 404) {
+            mensaje.innerHTML = '<div class="alert alert-danger">El pedido ' + pedidoId + ' no existe.</div>';
+            return;
+        }
+
+        mensaje.innerHTML = '<div class="alert alert-danger">Respuesta inesperada: HTTP ' + respuesta.status + '</div>';
+    }
+
+    document.getElementById('filtro').addEventListener('change', cargar);
+    cargar();
+</script>
+}

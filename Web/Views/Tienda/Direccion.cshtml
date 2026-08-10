@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Dirección de entrega";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <h2 class="mb-3">Dirección de entrega</h2>
+    <p class="text-muted small">
+        Consume <code>POST /api/Checkout/GuardarDireccion</code> y
+        <code>GET /api/Checkout/Direcciones/1</code>. Las referencias son opcionales.
+    </p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label fw-semibold">Calle</label>
+                    <input type="text" id="calle" class="form-control" value="Av. Independencia" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Número</label>
+                    <input type="text" id="numero" class="form-control" value="55" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Ciudad</label>
+                    <input type="text" id="ciudad" class="form-control" value="Santo Domingo" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Código postal</label>
+                    <input type="text" id="codigoPostal" class="form-control" value="10101" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Referencias <span class="text-muted fw-normal">(opcional)</span></label>
+                    <input type="text" id="referencias" class="form-control" />
+                </div>
+            </div>
+
+            <button type="button" id="btnGuardar" class="btn btn-primary w-100 mt-3">Guardar dirección</button>
+            <div id="mensaje" class="mt-3"></div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+        <h5 class="mb-0">Direcciones guardadas del usuario 1</h5>
+        <button type="button" id="btnCargar" class="btn btn-outline-secondary btn-sm">Recargar</button>
+    </div>
+    <ul id="listado" class="list-group"></ul>
+</div>
+
+@section Scripts {
+<script>
+    const mensaje = document.getElementById('mensaje');
+    const listado = document.getElementById('listado');
+
+    function valor(id) {
+        return document.getElementById(id).value;
+    }
+
+    async function cargarDirecciones() {
+        listado.innerHTML = '';
+        const respuesta = await fetch('/api/Checkout/Direcciones/1');
+        const direcciones = await respuesta.json();
+
+        if (direcciones.length === 0) {
+            listado.innerHTML = '<li class="list-group-item text-muted">Sin direcciones guardadas.</li>';
+            return;
+        }
+
+        direcciones.forEach(function (d) {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            let texto = d.calle + ' #' + d.numero + ', ' + d.ciudad + ' (' + d.codigoPostal + ')';
+            if (d.referencias) {
+                texto += ' — ' + d.referencias;
+            }
+            li.textContent = texto;
+            listado.appendChild(li);
+        });
+    }
+
+    document.getElementById('btnGuardar').addEventListener('click', async function () {
+        mensaje.innerHTML = '';
+
+        const cuerpo = {
+            usuarioId: 1,
+            calle: valor('calle'),
+            numero: valor('numero'),
+            ciudad: valor('ciudad'),
+            codigoPostal: valor('codigoPostal'),
+            referencias: valor('referencias') || null
+        };
+
+        const respuesta = await fetch('/api/Checkout/GuardarDireccion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cuerpo)
+        });
+
+        if (respuesta.ok) {
+            mensaje.innerHTML = '<div class="alert alert-success mb-0">Dirección guardada correctamente.</div>';
+            cargarDirecciones();
+            return;
+        }
+
+        // El [ApiController] devuelve los errores de ModelState en problem+json.
+        const problema = await respuesta.json();
+        const errores = problema.errors || {};
+        let html = '<div class="alert alert-danger mb-0"><strong>No se pudo guardar:</strong><ul class="mb-0">';
+        Object.keys(errores).forEach(function (campo) {
+            errores[campo].forEach(function (detalle) {
+                html += '<li>' + detalle + '</li>';
+            });
+        });
+        html += '</ul></div>';
+        mensaje.innerHTML = html;
+    });
+
+    document.getElementById('btnCargar').addEventListener('click', cargarDirecciones);
+    cargarDirecciones();
+</script>
+}

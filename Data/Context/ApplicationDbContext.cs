@@ -18,6 +18,12 @@ namespace Data.Context
             public DbSet<Cupon> Cupones { get; set; }
             public DbSet<ZonaEnvio> ZonasEnvio { get; set; }
 
+            // Modulo de catalogo, pedidos y promociones
+            public DbSet<Categoria> Categorias { get; set; }
+            public DbSet<Pedido> Pedidos { get; set; }
+            public DbSet<Direccion> Direcciones { get; set; }
+            public DbSet<Banner> Banners { get; set; }
+
 
 
 

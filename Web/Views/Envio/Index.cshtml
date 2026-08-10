@@ -1,0 +1,36 @@
+﻿@model Web.Models.CalculoEnvioViewModel
+@{
+    ViewData["Title"] = "Calcular Costo de Envío";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2 class="mb-4">Calcular Costo de Envío</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Calcular" asp-controller="Envio" method="post">
+                <div class="mb-3">
+                    <label asp-for="ZonaSeleccionada" class="form-label fw-semibold">Zona / Región</label>
+                    <select asp-for="ZonaSeleccionada" class="form-select">
+                        <option value="">-- Selecciona una zona --</option>
+                        @foreach (var zona in Model.Zonas)
+                        {
+                            <option value="@zona.Nombre" selected="@(Model.ZonaSeleccionada == zona.Nombre)">
+                                @zona.Nombre
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Calcular costo</button>
+            </form>
+
+            @if (!string.IsNullOrEmpty(Model.Mensaje))
+            {
+                <div class="alert @(Model.CostoEnvio.HasValue ? "alert-success" : "alert-danger") mt-3" role="alert">
+                    @Model.Mensaje
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿@model Web.Models.AplicarCuponViewModel
+@{
+    ViewData["Title"] = "Aplicar Cupón de Descuento";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2 class="mb-4">Aplicar Cupón de Descuento</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Aplicar" asp-controller="Cupon" method="post">
+                <div class="mb-3">
+                    <label asp-for="Subtotal" class="form-label fw-semibold">Subtotal de la compra</label>
+                    <input asp-for="Subtotal" class="form-control" placeholder="0.00" step="0.01" />
+                    <span asp-validation-for="Subtotal" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Codigo" class="form-label fw-semibold">Código de cupón</label>
+                    <input asp-for="Codigo" class="form-control text-uppercase" placeholder="Ej: BIENVENIDO10" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Aplicar cupón</button>
+            </form>
+
+            @if (!string.IsNullOrEmpty(Model.Mensaje))
+            {
+                <div class="alert @(Model.Exito ? "alert-success" : "alert-danger") mt-3" role="alert">
+                    @Model.Mensaje
+                </div>
+            }
+
+            @if (Model.Exito && Model.Total.HasValue)
+            {
+                <table class="table table-sm mt-3">
+                    <tbody>
+                        <tr>
+                            <td>Subtotal</td>
+                            <td class="text-end">$@Model.Subtotal.ToString("N2")</td>
+                        </tr>
+                        <tr class="text-success">
+                            <td>Descuento</td>
+                            <td class="text-end">-$@Model.MontoDescuento?.ToString("N2")</td>
+                        </tr>
+                        <tr class="fw-bold border-top">
+                            <td>Total</td>
+                            <td class="text-end">$@Model.Total?.ToString("N2")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

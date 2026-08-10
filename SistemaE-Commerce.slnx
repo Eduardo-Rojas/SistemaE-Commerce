@@ -1,1 +1,5 @@
-<Solution />
+<Solution>
+  <Project Path="Data/Data.csproj" />
+  <Project Path="Tests/Tests.csproj" />
+  <Project Path="Web/Web.csproj" />
+</Solution>

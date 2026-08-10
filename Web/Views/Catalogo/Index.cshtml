@@ -1,0 +1,47 @@
+@model List<Web.Models.ProductoCardViewModel>
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">Catálogo</h2>
+
+    @* El CatalogoController no expone la lista de categorías, así que los enlaces
+       van fijos con los Id sembrados en Program.cs (1 Electrónica, 2 Ropa, 3 Deportes). *@
+    <div class="mb-4 d-flex gap-2 flex-wrap">
+        <a asp-controller="Catalogo" asp-action="Index" class="btn btn-outline-secondary btn-sm">Todas</a>
+        <a asp-controller="Catalogo" asp-action="PorCategoria" asp-route-categoriaId="1" class="btn btn-outline-primary btn-sm">Electrónica</a>
+        <a asp-controller="Catalogo" asp-action="PorCategoria" asp-route-categoriaId="2" class="btn btn-outline-primary btn-sm">Ropa</a>
+        <a asp-controller="Catalogo" asp-action="PorCategoria" asp-route-categoriaId="3" class="btn btn-outline-primary btn-sm">Deportes</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            No hay productos en esta categoría.
+        </div>
+    }
+    else
+    {
+        <p class="text-muted small">Mostrando @Model.Count producto(s)</p>
+
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach (var producto in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="d-flex align-items-center justify-content-center" style="height: 180px; background-color: #e9ecef;">
+                            <img src="@producto.ImagenUrl" alt="@producto.Nombre"
+                                 style="max-height: 100%; max-width: 100%; object-fit: cover;"
+                                 onerror="this.remove();" />
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">@producto.Nombre</h6>
+                            <span class="fs-5 fw-bold text-success">$@producto.Precio.ToString("N2")</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

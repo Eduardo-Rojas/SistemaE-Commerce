@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "Promociones y reportes";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <h2 class="mb-3">Promociones y reportes</h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Subir banner</h5>
+            <p class="text-muted small">
+                Consume <code>POST /api/admin/AdminPromociones/SubirBanner</code>. Sin archivo devuelve
+                <code>400</code>; la API guarda el nombre del archivo, no la imagen en sí.
+            </p>
+
+            <input type="file" id="imagen" class="form-control" accept="image/*" />
+            <button type="button" id="btnSubir" class="btn btn-primary w-100 mt-3">Subir banner</button>
+            <div id="mensajeBanner" class="mt-3"></div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Reporte de ventas</h5>
+            <p class="text-muted small">
+                Consume <code>GET /api/admin/AdminPromociones/ExportarReporteVentas</code>. Descarga un CSV
+                que incluye <strong>solo</strong> los pedidos en estado <code>Pagado</code>.
+            </p>
+
+            <a href="/api/admin/AdminPromociones/ExportarReporteVentas" class="btn btn-outline-primary w-100">
+                Descargar reporte-ventas.csv
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const mensajeBanner = document.getElementById('mensajeBanner');
+
+    document.getElementById('btnSubir').addEventListener('click', async function () {
+        mensajeBanner.innerHTML = '';
+
+        const archivo = document.getElementById('imagen').files[0];
+        const datos = new FormData();
+        if (archivo) {
+            datos.append('imagen', archivo);
+        }
+
+        const respuesta = await fetch('/api/admin/AdminPromociones/SubirBanner', {
+            method: 'POST',
+            body: datos
+        });
+
+        if (respuesta.ok) {
+            const banner = await respuesta.json();
+            mensajeBanner.innerHTML =
+                '<div class="alert alert-success mb-0">Banner guardado: <strong>' + banner.imagenUrl +
+                '</strong> (activo: ' + banner.activo + ')</div>';
+            return;
+        }
+
+        const detalle = await respuesta.text();
+        mensajeBanner.innerHTML = '<div class="alert alert-danger mb-0">HTTP ' + respuesta.status + ' — ' + detalle + '</div>';
+    });
+</script>
+}

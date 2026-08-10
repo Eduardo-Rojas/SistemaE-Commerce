@@ -1,0 +1,109 @@
+@{
+    ViewData["Title"] = "Verificación del sistema";
+}
+
+<div class="container mt-4">
+    <h2>Verificación del sistema</h2>
+    <p class="text-muted">
+        Cada tarjeta corresponde a una funcionalidad ya implementada y cubierta por pruebas unitarias.
+        Los resultados esperados se calculan sobre los datos de ejemplo que se cargan al arrancar la aplicación.
+    </p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-1">
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Catálogo de productos</h5>
+                    <p class="card-text text-muted small">Filtrado por nombre, categoría y rango de precio.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Sin filtros</td><td class="text-end">8 productos</td></tr>
+                            <tr><td>Nombre: <code>laptop</code></td><td class="text-end">1 producto</td></tr>
+                            <tr><td>Categoría: <code>Ropa</code></td><td class="text-end">2 productos</td></tr>
+                            <tr><td>Precio 500 – 1000</td><td class="text-end">Mouse Inalámbrico, $850.00</td></tr>
+                            <tr><td>Desplegable de categorías</td><td class="text-end">3 opciones</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Producto" asp-action="Index" class="btn btn-primary w-100">Ir a Productos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Cupones de descuento</h5>
+                    <p class="card-text text-muted small">Validación del código, del límite de usos y del cálculo del total.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>BIENVENIDO10</code>, subtotal 2000</td><td class="text-end">Descuento $500.00, total $1,500.00</td></tr>
+                            <tr><td><code>BIENVENIDO10</code>, subtotal 300</td><td class="text-end">Total $0.00 (nunca negativo)</td></tr>
+                            <tr><td><code>AGOTADO</code></td><td class="text-end">"ya alcanzó su límite de usos"</td></tr>
+                            <tr><td><code>NOEXISTE</code></td><td class="text-end">"El cupón ingresado no existe"</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Cupon" asp-action="Index" class="btn btn-primary w-100">Ir a Cupones</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Costo de envío</h5>
+                    <p class="card-text text-muted small">Costo asociado a cada zona registrada.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Zona</th><th class="text-end">Costo esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Santo Domingo</td><td class="text-end">$150.00</td></tr>
+                            <tr><td>Santiago</td><td class="text-end">$250.00</td></tr>
+                            <tr><td>Punta Cana</td><td class="text-end">$400.00</td></tr>
+                            <tr><td>Interior</td><td class="text-end">$350.00</td></tr>
+                            <tr><td>Sin seleccionar zona</td><td class="text-end">"Debes seleccionar una zona"</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Envio" asp-action="Index" class="btn btn-primary w-100">Ir a Envío</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Inicio de sesión</h5>
+                    <p class="card-text text-muted small">Validación de credenciales contra la base de datos.</p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Prueba</th><th class="text-end">Resultado esperado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Credenciales correctas</td><td class="text-end">Redirige a esta pantalla</td></tr>
+                            <tr><td>Contraseña incorrecta</td><td class="text-end">"Correo o contraseña incorrectos"</td></tr>
+                            <tr><td>Correo vacío</td><td class="text-end">"El correo es obligatorio"</td></tr>
+                            <tr><td>Correo con formato inválido</td><td class="text-end">"Ingresa un correo válido"</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary w-100">Ir a Login</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

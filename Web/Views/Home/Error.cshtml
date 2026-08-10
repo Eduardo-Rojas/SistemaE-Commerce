@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            <h2 class="mb-3">Ocurrió un error</h2>
+            <p class="text-muted">
+                No pudimos completar la operación. Vuelve a intentarlo; si el problema continúa,
+                regresa a la pantalla de inicio.
+            </p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Volver al inicio</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+@model Web.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2 class="mb-4">Iniciar Sesión</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Login" asp-controller="Account" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label fw-semibold">Correo</label>
+                    <input asp-for="Correo" class="form-control" placeholder="cliente@@tienda.com" />
+                    <span asp-validation-for="Correo" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-semibold">Contraseña</label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </form>
+        </div>
+    </div>
+</div>

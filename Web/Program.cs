@@ -21,9 +21,6 @@ builder.Services.AddScoped<IZonaEnvioRepositorio, ZonaEnvioRepositorio>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseInMemoryDatabase("EcommerceDb"));
 
-// 2. Inyectar tu Repositorio (Para que el controlador lo entienda)
-builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
-
 var app = builder.Build();
 
 // 2. Poblar la base de datos al arrancar (Seeding)
